@@ -15,5 +15,5 @@ http.createServer((req,res)=>{
             res.end();
         })
     }
-}).listen(4040);
+}).listen(5050);
 console.log('server created')
