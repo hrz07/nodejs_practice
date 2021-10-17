@@ -1,10 +1,1 @@
-{
-    "students":
-    [
-        {"id":1,"name":"Hridoy"},
-        {"id":2,"name":"Noman"},
-        {"id":3,"name":"Hasan"},
-        {"id":4,"name":"Simanto"},
-        {"id":5,"name":"Tasin"}
-    ]
-}
+[{"id":1,"name":"Hridoy"},{"id":2,"name":"Noman"},{"id":3,"name":"Hasan"},{"id":4,"name":"Simanto"},{"id":5,"name":"Tasin"},{"id":7,"name":"Tonmoy"}]
