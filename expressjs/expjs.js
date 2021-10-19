@@ -9,7 +9,7 @@ const db = require('./db');
 app.use(express.json())
 
 
-// get from bd
+// get from db
 app.get('/',(request,response)=>{
     response.send('my first express server ever!')
 })
@@ -30,6 +30,19 @@ app.post('/api/students',(request,response)=>{
             response.send(student);
         })
     })  
+})
+
+
+// Route
+app.get('/api/students/:id',(request,response)=>{
+    const id = parseInt(request.params.id);
+    
+    db.dbFunc()
+    .then(students=>{
+        const student = students.find(s=> s.id === id)
+        if(!student) response.status(404).send('This id is not available right now')
+        else response.send(student)
+    })
 })
 
 
