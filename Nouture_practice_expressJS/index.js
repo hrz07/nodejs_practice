@@ -1,55 +1,63 @@
-//module config
-const fs = require('fs');
 const express = require('express');
 const app = express();
-
-
-//use middleware
+const db = require('./connection');
+const PostModel = require('./postModel');
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
-const files =  JSON.parse(fs.readFileSync(`${ __dirname }/Data/sourceData.json`)) 
 
-app.get('/data',(req,res)=>{
-    res.status(200).json({
-        status : "success",
-        results : files.length,
-        data : files
-    })   
+
+app.post('/', async (req, res) => {
+    const { name, status } = req.body;
+    try {
+        const newPost = await PostModel.create({ name, status });
+        res.status(200).json(newPost)
+    } catch (error) {
+        res.status(500).json(error)
+    }
 })
 
-app.post('/data',(req,res)=>{   
-    const newID = files[files.length-1].id + 1;
-    const newFiles = Object.assign(
-        {id : newID},
-         req.body
-    )
-
-    files.push(newFiles);
-
-    fs.writeFile(`${ __dirname }/Data/sourceData.json`, JSON.stringify(files),err=>{
-        res.status(201).json({
-            status:"success",
-            newFiles
-        })
-    })
-
+app.get('/', async (req,res)=>{
+    try {
+        const data = await PostModel.find({})
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(500).json(error)
+    }
 })
 
-app.get('/data/:id',(req,res)=>{
-    const id = req.params.id * 1;
-    const findData = files.find(dt=> dt.id === id)
-    
-    if(!files[id]){
-        res.status(404).send('Bad request, this data is not available')
-    }else{
-        res.status(200).json(findData)
+app.get('/:id', async (req,res)=>{
+    const {id} = req.params;
+    try {
+        const data = await PostModel.findById(id);
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
+app.put('/:id', async (req,res)=>{
+    const { name, status } = req.body;
+    const {id} = req.params;
+    try {
+        const data = await PostModel.findByIdAndUpdate(id,{name,status});
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
+app.delete('/:id', async (req,res)=>{
+    // const { name, status } = req.body;
+    const {id} = req.params;
+    try {
+        const data = await PostModel.findByIdAndDelete(id);
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(500).json(error)
     }
 })
 
 
 
-//server port configure
-const PORT = 3000;
-app.listen(PORT,()=>{
-    console.log('server started successfully');
-})
+module.exports = app
